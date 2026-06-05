@@ -1,180 +1,499 @@
-# GeekServer介绍：
+<div align="center">
 
-GeekServer是一个开源的[分区分服](https://mp.weixin.qq.com/s?__biz=MzI3MTQ1NzU2NA==&mid=2247483884&idx=1&sn=3547c769a300f1d82cc04e9b1852c6d5&chksm=eac0cd9fddb7448997e38a74e2d26bde259cd2127583e31bc488511bc1fdcd9f35caff27d4a3&scene=21#wechat_redirect)
-的游戏服务器框架，采用C# .Netcore开发，开发效率高，性能强，跨平台，并内置不停服热更新机制。可以满足绝大部分游戏类型的需求，特别是和Unity3D协同开发更佳。    
-__设计理念:大道至简，以简化繁__
+![GameFrameX Logo](https://download.alianblank.com/gameframex/gameframex_logo_320.png)
 
-# 程序集说明
+# GameFrameX Server
 
-|         程序集名称          |             介绍             |                               用途                               |
-|:----------------------:|:--------------------------:|:--------------------------------------------------------------:|
-|     Server.Luncher     |           程序启动入口           |                            用于编写启动逻辑                            |
-|     Server.Hotfix      | 热更新逻辑和处理程序对象放置区(该部分为热更新内容) |               用于编写逻辑的地方(`主要工作区`,目录和`Apps`目录结构一致)               |
-|      Server.Apps       |    组件和实体对象放置区(该部分不能热更新)    | 用于编写基础逻辑和数据存储(`功能的添加修改主要工作区`,目录结构按照`ServerType` 划分和`HotFix`对应) |
-|     Server.Config      |       配置文件对象和配置文件放置区       |                 用于编写配置文件的类和文件的映射(目前由LuBan自动生成)                 |
-|      Server.Core       |           核心底层逻辑           |                            用于编写核心库                             |
-|    Server.DBServer     |         数据库操作相关服务          |                         用于编写数据库操作相关的逻辑                         |
-|    Server.Extension    |           对框架的扩展           |                        用于编写函数或其他工具库的扩展                         |
-| Server.Google.ProtoBuf |       ProtoBuff协议支持库       |                    ProtoBuff协议库(一般不会更新和修改)                     |
-|       Server.Log       |         日志配置和操作放置区         |                           用于编写日志配置相关                           |
-|      Server.Proto      |        数据通讯协议对象放置区         |                           用于编写通讯协议对象                           |
-|    Server.Serialize    |         序列化器 对象放置区         |                     用于编写通讯协议的序列化和反序列化的帮助类                      |
-|     Server.Setting     |        设置相关的内容 放置区域        |                        用于编写游戏逻辑配置或常量配置                         |
-|     Server.Utility     |         工具函数 对象放置区         |                         用于编写一些工具相关的函数                          |
+[![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com)
+[![License](https://img.shields.io/badge/license-MIT+Apache%202.0-orange.svg)](LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-gameframex.doc.alianblank.com-brightgreen.svg)](https://gameframex.doc.alianblank.com)
 
-# GeekServer功能：
+**All-in-One Solution for Indie Game Development · Empowering Indie Developers' Dreams**
 
-### 1.跨平台
+[📖 Documentation](https://gameframex.doc.alianblank.com) · [🚀 Quick Start](#quick-start) · [💬 QQ Group: 467608841](https://qm.qq.com/cgi-bin/qm/qr?k=sYFd1nv6m2KZIWFLorZ5pBR0AE5ZhbuL&jump_from=webapi&authKey=oCu+uoL3n35fT5SEt7iLgGtROPxh31n/rHUxRlp0w1f+j38W4tKBuWyRH3KEdwHN)
 
-使用C# .Netcore开发（可以跨平台，可以跨平台，可以跨平台），.Netcore现在功能和性能都已经十分强大和稳健，不管是在windows还是linux上部署起来都很简便。
+---
 
-### 2.全面异步编程
+🌐 **Language**: **English** | [简体中文](README.zh-CN.md) | [繁體中文](README.zh-TW.md) | [日本語](README.ja.md) | [한국어](README.ko.md)
 
-全部采用异步编程（async/await），让逻辑代码变得整洁优雅，清晰易懂，让代码写起来行如流水。
+---
 
-### 3.TPL(Task Parallel Library) Actor模型
+</div>
 
-GeekServer的Actor模型构建于强大的TPL DataFlow之上，让Actor模型如虎添翼。（不了解Actor模型，可以搜一下相关资料，Akka，Orleans都是采用的Actor模型）[了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/1.Actor%E6%A8%A1%E5%9E%8B.md)
+## Project Overview
 
-### 4.Actor入队透明化
+GameFrameX Server is a high-performance game server framework built on C# .NET 10.0, featuring an **Actor Model** architecture with **hot-update** support. The framework enforces strict separation between persistent state and business logic, designed specifically for multiplayer online game scenarios.
 
-GeekServer内部会自动处理线程上下文, 编译期间会通过[Source Generator](https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview)自动生成入队代码, 开发人员无需关心多线程以及入队逻辑,
-只需要像调用普通函数一样书写逻辑。[了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/Actor%E5%85%A5%E9%98%9F.md)
+> Design Philosophy: Simplicity over complexity
 
-### 5.Actor死锁检测
+## Core Features
 
-Actor模型本身是存在死锁的情况，且不容易被发现。GeekServer内部可检测环路死锁(即:A->B->C->A)，并采用调用链重入机制消除环路死锁。[了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/1.Actor%E6%A8%A1%E5%9E%8B.md)
+- **Actor Model** — Lock-free high-concurrency architecture based on TPL DataFlow, avoiding traditional lock contention through message passing
+- **State-Logic Separation** — Strict separation between persistent data (Apps layer) and hot-updatable business logic (Hotfix layer)
+- **Zero-Downtime Hot Updates** — Replace business logic assemblies at runtime without restarting the server
+- **Multi-Protocol Networking** — Support for TCP, WebSocket, and HTTP protocols with built-in message encoding/decoding and compression
+- **MongoDB Persistence** — Transparent ORM mapping based on CacheState with automatic serialization/deserialization
+- **Source Generator** — Roslyn-based Agent code generation for automatic Actor message queue scheduling
+- **Config Table System** — Integrated Luban config generation with JSON hot-reloading
+- **OpenTelemetry** — Built-in Prometheus metrics export, health checks, and performance monitoring
 
-### 6.支持不停服更新
+## Architecture
 
-采用组件+状态的设计，状态只有属性，没有方法，组件只用方法，没有属性，并通过代理的方式全部放到热更dll中，运行时重新加载dll即可热更所有逻辑。[了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/%E7%83%AD%E6%9B%B4hotfix.md)
-
-### 7.网络模块
-
-网络模块替换了原来的DotNetty，采用Asp.Net的默认服务器Kestrel，支持协议多（Tcp，udp,Http123,websocket，signalr等），而且性能比dotnetty高很多[了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/%E7%BD%91%E7%BB%9CNet(tcp%26http).md)
-
-### 8.持久化透明
-
-采用Nosql作为数据存储，状态的持久化全透明，框架会自动序列化/反序列,让开发人员更加专注于业务逻辑，无需操心数据库。 [了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/2.Actor%26Component%26State.md)
-
-### 9.Timer/Scheduler/Event
-
-内置线程安全的Timer，Scheduler，Event系统，轻松应对游戏服务器常见的定时，任务计划，事件触发等业务需求。[了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/%E4%BA%8B%E4%BB%B6Event-timer.md)
-
-### 10.定期释放不活跃内存数据
-
-以功能系统级别的粒度，定期剔除内存中不活跃的玩家数据，尽最大可能减少服务器内存开销。
-
-### 11.高效的通信协议(基于MessagePack)
-
-[Geek.MsgPackTool](https://github.com/leeveel/Geek.MsgPackTool) [MessagePack]
-对多态支持不够友好，GeekServer提供了工具来生成多态注册信息，序列化和反序列化效率极高，同时序列化之后的数据极小，数据传输效率很高。[了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/%E5%85%B3%E4%BA%8E%E5%8D%8F%E8%AE%AE.md)
-
-### 12.一键导表工具(GeekConfig)
-
-[GeekConfig](https://github.com/leeveel/GeekConfig)是一个一键导表工具，将策划配置表，转化为二进制数据，并提供了方便快捷的API供游戏调用
-
-### 13.数据库客户端(GeekDB.GUI)
-
-[GeekDB.GUI](https://github.com/leeveel/GeekDB.GUI)是一个数据库客户端，GeekServer支持内嵌(RocksDB)
-和直连MongoDB的模式，但是存放的数据都是通过MessagePack序列化之后的二进制，此工具用于对这些二进制数据进行浏览。[了解更多](https://github.com/leeveel/GeekServer/blob/main/Docs/2.Actor%26Component%26State.md)
-
-# 运行
-
-1. 安装[.NetCore6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
-2. 安装[mongodb4.x](https://www.mongodb.com/try/download/community)
-3. 打开git clone本项目https://github.com/leeveel/GeekServer.git
-4. 运行Tools/ExcelGen/ExcelToCode.exe 点击[服务器-ALL]导出配置表
-5. 用VisualStudio2022打开GeekServer.sln 启动GeekServer.App
-6. 启动GeekServer.Test (一个1000人登录的demo)
-7. 打开UnityDemo工程，打开SampleScene，运行查看日志(**检查Main Camera上是否有脚本丢失，如果有请挂载GameMain.cs**)
-
-# 文档&例子&Demo
-
-[十分钟上手教程](https://github.com/leeveel/GeekServer/blob/main/Docs/%E5%8D%81%E5%88%86%E9%92%9F.md)  
-[了解更多](https://github.com/leeveel/GeekServer/tree/master/Docs)
-
-# 代码片段
-
-```c#
-//采用注解注册Actor组件
-[Comp(ActorType.Role)]
-public class BagComp : StateComp<BagState>{}
-
-//调用Actor组件函数(就像调用普通函数一样,无需关心多线程或入队)
-var serverComp = await EntityMgr.GetCompAgent<ServerCompAgent>(ActorType.Server);
-await serverComp.CheckCrossDay();
-
-//定义状态(数据)
-public class RoleState : DBState
-{
-    public string RoleName { get; set; }
-    public long RoleId { get; set; }
-    ...
-}
-//绑定组件
-public class RoleComp : StateComponent<RoleState>{}
-//绑定组件Agent(Agent类逻辑可全部热更新)
-public class RoleCompAgent : StateComponentAgent<RoleComp, RoleState>{}
+```
+┌──────────────────────────────────────────────────────────────┐
+│                       Client Layer                           │
+├──────────────────────────────────────────────────────────────┤
+│                      Network Layer                           │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
+│  │   TCP    │  │WebSocket │  │   HTTP   │  │   KCP    │    │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
+├──────────────────────────────────────────────────────────────┤
+│                  Hotfix Layer (Hot-updatable)                │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  ComponentAgent  │  HttpHandler  │  EventHandler     │   │
+│  └──────────────────────────────────────────────────────┘   │
+├──────────────────────────────────────────────────────────────┤
+│                  Apps Layer (Non-hot-updatable)              │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                  │
+│  │  State   │  │Component │  │ActorType │                  │
+│  └──────────┘  └──────────┘  └──────────┘                  │
+├──────────────────────────────────────────────────────────────┤
+│                 Framework Layer (NuGet Packages)             │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │
+│  │  Core    │  │ NetWork  │  │ DataBase │  │ Monitor  │    │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │
+├──────────────────────────────────────────────────────────────┤
+│                     Database Layer                           │
+│  ┌──────────────────────────────────────────────────────────┐ │
+│  │                      MongoDB                             │ │
+│  └──────────────────────────────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-# 最佳实践
+## Quick Start
 
-GeekServer有严格的书写规范检查，如不符合规范编译直接报错  
-1.CompAgent不能被二次继承，Agent继承的需求理论上很少，如果有请采用组合模式  
-2.为CompAgent中需要被外部提供服务的接口，添加【Api】注解  
-3.CompAgent中非【Threadsafe】的【Api】接口只能是异步函数    
-4.CompAgent中不要书写构造函数,重写Active函数来完成初始化工作  
-5.大部分情况下你都应该使用await等待来书写逻辑，不需要等待的方法请加上【Discard】注解，如：通知全服玩家，就没必要等待一个通知完成后再通知下一个。 同时[Source Generator](https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/source-generators-overview)
-在编译期间对标记了【Discard】的函数做了处理，内部直接返回了Task.CompletedTask，所以外部使用下划线丢弃或是用await都是等价的，为了规范统一，可以全部使用await。**这样有个好处，就是可以在编译期间检查所有Agent中的代码，如有发现使用了弃元运算符(_ = DoSomething())
-则提示代码编写不符合规范。**
+### Prerequisites
 
-```c#
-public Task NotifyAllClient()
+| Dependency | Version |
+| :--- | :--- |
+| [.NET SDK](https://dotnet.microsoft.com/download) | 10.0+ |
+| [MongoDB](https://www.mongodb.com/try/download/community) | 4.x+ |
+| IDE | Visual Studio 2022 / JetBrains Rider / VS Code |
+
+### Installation & Run
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/GameFrameX/Server_main.git
+cd Server_main
+
+# 2. Restore dependencies
+dotnet restore
+
+# 3. Build
+dotnet build
+
+# 4. Run the game server
+dotnet run --project GameFrameX.Launcher \
+    --ServerType=Game \
+    --ServerId=1000 \
+    --APMPort=29090
+```
+
+### Verify Deployment
+
+| Endpoint | URL | Description |
+| :--- | :--- | :--- |
+| Health Check | `http://localhost:29090/health` | Service health status |
+| Metrics | `http://localhost:29090/metrics` | Prometheus metrics |
+| Test API | `http://localhost:28080/game/api/test` | HTTP connectivity test |
+
+## Project Structure
+
+```
+Server_main/
+├── GameFrameX.Launcher/         # Application entry point (Executable)
+│   ├── Program.cs               # Bootstrap: register state types & protocol messages
+│   └── StartUp/
+│       └── AppStartUpGame.cs    # Game server startup flow
+│
+├── GameFrameX.Hotfix/           # Hot-update layer (Business logic, runtime-replaceable)
+│   ├── Logic/
+│   │   ├── Http/                # HTTP request handlers
+│   │   │   ├── TestHttpHandler.cs
+│   │   │   ├── ReloadHttpHandler.cs
+│   │   │   ├── Player/          # Account login, online queries
+│   │   │   └── Bag/             # Item sending
+│   │   ├── Player/
+│   │   │   ├── Bag/             # Bag component agent
+│   │   │   ├── Login/           # Login/logout logic
+│   │   │   └── Pet/             # Pet component agent
+│   │   ├── Account/             # Account component agent
+│   │   └── Server/              # Server global component agent
+│   └── StartUp/                 # Hot-update startup flow
+│       ├── AppStartUpHotfixGameByEntry.cs    # Entry point
+│       ├── AppStartUpHotfixGameByMain.cs     # Network/connection management
+│       ├── AppStartUpHotfixGameByHeart.cs    # Heartbeat handling
+│       └── AppStartUpHotfixGameByGateWay.cs  # Gateway communication
+│
+├── GameFrameX.Apps/             # Application state layer (Non-hot-updatable)
+│   ├── ActorType.cs             # Actor type enum definition
+│   ├── Account/Login/           # Login state + component
+│   ├── Player/
+│   │   ├── Bag/                 # Bag state + component
+│   │   ├── Player/              # Player state + component
+│   │   └── Pet/                 # Pet state + component
+│   ├── Server/                  # Server global state + component
+│   └── Common/
+│       ├── Session/             # Session management (SessionManager)
+│       ├── Event/               # Event ID definitions
+│       └── EventData/           # Event arguments
+│
+├── GameFrameX.Config/           # Config table system (Luban generated)
+│   ├── ConfigComponent.cs       # Config loading singleton
+│   ├── Tables/                  # Generated config table classes
+│   ├── TablesItem/              # Config data models
+│   └── json/                    # JSON config data files
+│
+├── GameFrameX.Proto/            # Network protocol definitions
+│   ├── Basic_10.cs              # Basic protocols (heartbeat, etc.)
+│   ├── Bag_100.cs               # Bag protocols
+│   ├── User_300.cs              # User/account protocols
+│   └── BuiltIn/                 # Built-in system protocols
+│
+├── GameFrameX.CodeGenerator/    # Roslyn source generator
+│   ├── AgentGenerator.cs        # Agent wrapper code generation
+│   └── AgentTemplate.cs         # Code templates
+│
+├── Server.sln                   # Visual Studio solution
+├── Dockerfile                   # Docker multi-stage build
+├── docker-compose.yml           # Docker Compose orchestration
+└── LICENSE                      # MIT + Apache 2.0 dual license
+```
+
+## Usage Examples
+
+### Core Pattern: State - Component - Agent
+
+GameFrameX uses a three-layer separation pattern that enables hot-updating business logic without server downtime.
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   State      │────▶│  Component   │◀────│ ComponentAgent│
+│  (Data Def)  │     │   (Shell)    │     │  (Logic)     │
+│  Apps Layer  │     │  Apps Layer  │     │ Hotfix Layer │
+│  Not Hot-fix │     │  Not Hot-fix │     │  Hot-fixable │
+└──────────────┘     └──────────────┘     └──────────────┘
+```
+
+#### Step 1: Define State (Apps Layer)
+
+Inherit `CacheState` to define persistent data structures. The framework handles MongoDB serialization automatically.
+
+```csharp
+// GameFrameX.Apps/Player/Bag/Entity/BagState.cs
+public sealed class BagState : CacheState
 {
-   for(int i=0; i<clients.count; i++)
-   {
-     //_ = NotifyOneClient(clients[i].roleId);
-	 //对于标记了[Discard]的函数，等价于上面一行代码
-	 await NotifyOneClient(clients[i].roleId);
-   }
+    public Dictionary<int, BagItemState> List { get; set; } = new();
 }
 
-[Api]
-[Discard]
-public virtual Task NotifyOneClient(long roleId)
+public sealed class BagItemState
 {
-   //...
-   //...
+    public long ItemId { get; set; }
+    public long Count { get; set; }
 }
 ```
 
-5.CompAgent中为需要提供给外部访问接口，标记[Api]注解，如果不加外部又有访问，**则会有线程安全问题**，除非此接口本身就是线程安全的(标记了[ThreadSafe]注解)。
+#### Step 2: Create Component (Apps Layer)
 
-```c#
-public class ServerCompAgent : StateCompAgent<ServerComp, ServerState>
+Inherit `StateComponent<TState>` to serve as the bridge between state and logic.
+
+```csharp
+// GameFrameX.Apps/Player/Bag/Component/BagComponent.cs
+[ComponentType(GlobalConst.ActorTypePlayer)]
+public class BagComponent : StateComponent<BagState> { }
+```
+
+#### Step 3: Implement Business Logic (Hotfix Layer)
+
+Inherit `StateComponentAgent<TComponent, TState>` to write hot-updatable business code.
+
+```csharp
+// GameFrameX.Hotfix/Logic/Player/Bag/BagComponentAgent.cs
+public class BagComponentAgent : StateComponentAgent<BagComponent, BagState>
 {
-    private Task TestScheduleTimer()
+    public async Task OnAddBagItem(INetWorkChannel netWorkChannel,
+        ReqAddItem message, RespAddItem response)
     {
-        LOGGER.Debug("ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔3秒执行");
+        // Validate item config exists
+        foreach (var item in message.ItemDic)
+        {
+            if (!ConfigComponent.Instance.GetConfig<TbItemConfig>()
+                .TryGet(item.Key, out var _))
+            {
+                response.ErrorCode = (int)OperationStatusCode.NotFound;
+                return;
+            }
+        }
+
+        await UpdateChanged(netWorkChannel, message.ItemDic);
+    }
+
+    public async Task<BagState> UpdateChanged(INetWorkChannel netWorkChannel,
+        Dictionary<int, long> itemDic)
+    {
+        var bagState = OwnerComponent.State;
+        var notify = new NotifyBagInfoChanged();
+
+        foreach (var item in itemDic)
+        {
+            if (bagState.List.TryGetValue(item.Key, out var value))
+            {
+                value.Count += item.Value;
+            }
+            else
+            {
+                bagState.List[item.Key] = new BagItemState
+                {
+                    Count = item.Value, ItemId = item.Key
+                };
+            }
+        }
+
+        await netWorkChannel.WriteAsync(notify);
+        await OwnerComponent.WriteStateAsync(); // Auto-persist to MongoDB
+        return bagState;
+    }
+}
+```
+
+### HTTP Handler
+
+Inherit `BaseHttpHandler` and register with `[HttpMessageMapping]`.
+
+```csharp
+// GameFrameX.Hotfix/Logic/Http/TestHttpHandler.cs
+[HttpMessageMapping(typeof(TestHttpHandler))]
+[HttpMessageResponse(typeof(HttpTestResponse))]
+[Description("Test API endpoint")]
+public sealed class TestHttpHandler : BaseHttpHandler
+{
+    public override Task<string> Action(string ip, string url,
+        Dictionary<string, object> parameters)
+    {
+        var response = new HttpTestResponse { Message = "hello" };
+        return Task.FromResult(HttpJsonResult.SuccessString(response));
+    }
+}
+```
+
+### RPC Message Handler
+
+The framework provides two RPC handler base classes with automatic ComponentAgent injection:
+
+```csharp
+// Player-level message (bound to a specific player Actor)
+[MessageMapping(typeof(ReqAddItem))]
+internal sealed class AddItemHandler
+    : PlayerRpcComponentHandler<BagComponentAgent, ReqAddItem, RespAddItem>
+{
+    protected override async Task ActionAsync(ReqAddItem request, RespAddItem response)
+    {
+        await ComponentAgent.OnAddBagItem(NetWorkChannel, request, response);
+    }
+}
+
+// Global-level message (bound to the server Actor)
+[MessageMapping(typeof(ReqHeartBeat))]
+internal sealed class HeartBeatHandler
+    : GlobalRpcComponentHandler<ServerComponentAgent, ReqHeartBeat, RespHeartBeat>
+{
+    protected override Task ActionAsync(ReqHeartBeat request, RespHeartBeat response)
+    {
         return Task.CompletedTask;
     }
-
-    /// <summary>
-    /// 由于此接口会提供给其他Actor访问，所以需要标记为[Api]
-    /// </summary>[GameFrameX.Client.csproj](GameFrameX.Client%2FGameFrameX.Client.csproj)
-    /// <returns></returns>
-    [Api]
-    public virtual Task<int> GetWorldLevel()
-    {
-        return Task.FromResult(State.WorldLevel);
-    }
-
 }
 ```
 
-更多异步书写规范请参考微软官方文档[AsyncGuidance.md](https://github.com/davidfowl/AspNetCoreDiagnosticScenarios/blob/master/AsyncGuidance.md)
+### Event Handling
 
-# 推荐项目
+Use the `[Event]` attribute to bind event IDs. The framework automatically dispatches to the corresponding ComponentAgent.
 
-[GeekConfig](https://github.com/leeveel/GeekConfig) 一键从Excel中导出模板代码和二进制数据  
+```csharp
+[Event(EventId.PlayerLogin)]
+internal sealed class PlayerLoginEventHandler : EventListener<PlayerComponentAgent>
+{
+    protected override Task HandleEvent(PlayerComponentAgent agent, GameEventArgs args)
+    {
+        return agent.OnLogin();
+    }
+}
+```
+
+### Agent Method Attributes
+
+The Roslyn source generator automatically handles Actor message queue scheduling. Control invocation behavior through attributes:
+
+| Attribute | Description | Use Case |
+| :--- | :--- | :--- |
+| `[Service]` | Default mode; method calls are enqueued to the Actor message queue | All business methods |
+| `[ThreadSafe]` | Skip message queue, invoke directly (requires thread-safe implementation) | Read-only operations, stateless computation |
+| `[Discard]` | Fire-and-forget, do not await the return value | Logging, statistics where results are not needed |
+| `[TimeOut(ms)]` | Set timeout for message queue invocation | Long operations requiring timeout control |
+
+```csharp
+public class ServerComponentAgent : StateComponentAgent<ServerComponent, ServerState>
+{
+    // Enqueued to Actor message queue
+    [Service]
+    public virtual Task<bool> IsOnline(long roleId) { ... }
+
+    // Skip message queue, thread-safe direct call
+    [Service]
+    [ThreadSafe]
+    public virtual long FirstStartTime()
+    {
+        return State.FirstStartTime;
+    }
+
+    // Fire-and-forget, non-blocking
+    [Service]
+    [Discard]
+    public virtual ValueTask AddOnlineRole(long roleId)
+    {
+        OwnerComponent.OnlineSet.Add(roleId);
+        return ValueTask.CompletedTask;
+    }
+}
+```
+
+### Config Table Access
+
+Use the `ConfigComponent` singleton to access Luban-generated config tables:
+
+```csharp
+var config = ConfigComponent.Instance.GetConfig<TbItemConfig>();
+
+// Safe query with TryGet
+if (config.TryGet(itemId, out var itemConfig))
+{
+    // Use itemConfig.Name, itemConfig.Type, etc.
+}
+```
+
+### Database Operations
+
+Use the `GameDb` static class for MongoDB CRUD operations:
+
+```csharp
+// Query
+var state = await GameDb.FindAsync<LoginState>(
+    m => m.UserName == userName && m.Password == password);
+
+// Add or update
+await GameDb.AddOrUpdateAsync(loginState);
+
+// List query
+var list = await GameDb.FindListAsync<LoginState>(m => m.Id != 0);
+
+// Delete
+var count = await GameDb.DeleteAsync(state);
+```
+
+### Hot Update Mechanism
+
+The hot-update system allows replacing business logic without stopping the server.
+
+- **Apps Layer** (`GameFrameX.Apps`): Contains state definitions and component shells — **not hot-updatable**
+- **Hotfix Layer** (`GameFrameX.Hotfix`): Contains all business logic — **hot-updatable**
+- **Hotfix assembly** outputs to the `hotfix/` directory, loaded at runtime by `HotfixManager`
+
+```bash
+# Trigger via HTTP endpoint (with version number)
+curl "http://localhost:28080/game/api/Reload?version=1.0.1"
+```
+
+## Documentation & Resources
+
+### Configuration
+
+| Parameter | Description | Default | Example |
+| :--- | :--- | :--- | :--- |
+| `ServerType` | Server type | — | `Game` |
+| `ServerId` | Unique server ID | — | `1000` |
+| `InnerPort` | TCP internal port | — | `29100` |
+| `HttpPort` | HTTP service port | `0` | `28080` |
+| `WsPort` | WebSocket service port | `0` | `29110` |
+| `MetricsPort` | Prometheus metrics port | `0` | `29090` |
+| `DataBaseUrl` | MongoDB connection string | — | `mongodb://localhost:27017` |
+| `DataBaseName` | Database name | — | `gameframex` |
+
+```bash
+dotnet GameFrameX.Launcher.dll \
+    --ServerType=Game \
+    --ServerId=1000 \
+    --InnerPort=29100 \
+    --HttpPort=28080 \
+    --WsPort=29110 \
+    --MetricsPort=29090 \
+    --DataBaseUrl=mongodb://127.0.0.1:27017 \
+    --DataBaseName=game_db
+```
+
+### Docker Deployment
+
+```bash
+docker-compose up --build
+```
+
+| Port | Protocol | Description |
+| :--- | :--- | :--- |
+| `29090` | HTTP | APM metrics / Health check |
+| `29100` | TCP | Game client connections |
+| `29110` | WebSocket | WebSocket connections |
+| `28080` | HTTP | HTTP API |
+
+### Message Protocol
+
+Message IDs are calculated by module ID shift: `(moduleId << 16) + seqId`
+
+| Module | ID Range | File | Description |
+| :--- | :--- | :--- | :--- |
+| System | -10 ~ -1 | `Player_-10.cs`, `Service_-3.cs` | Built-in system protocols |
+| Basic | 10 | `Basic_10.cs` | Heartbeat, server ready notification |
+| Bag | 100 | `Bag_100.cs` | Item CRUD, use, compose |
+| User | 300 | `User_300.cs` | Login, register, character list |
+
+### Tech Stack
+
+| Component | Technology |
+| :--- | :--- |
+| Runtime | .NET 10.0 |
+| Database | MongoDB |
+| Networking | SuperSocket |
+| Serialization | protobuf-net |
+| Config Generation | Luban |
+| Code Generation | Roslyn Source Generator |
+| Monitoring | OpenTelemetry + Prometheus |
+| Object Mapping | Mapster |
+| Containerization | Docker + Docker Compose |
+
+## Community & Support
+
+- [Official Documentation](https://gameframex.doc.alianblank.com)
+- [GitHub Organization](https://github.com/GameFrameX)
+- [Gitee Mirror](https://gitee.com/GameFrameX)
+- [Issue Tracker](https://github.com/GameFrameX/GameFrameX/issues)
+- [Discussions](https://github.com/GameFrameX/GameFrameX/discussions)
+
+### Contributing
+
+1. Fork this repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add some feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Create a Pull Request
+
+## License
+
+This project is dual-licensed under the [MIT License](https://opensource.org/licenses/MIT) and [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). See the [LICENSE](LICENSE) file for details.

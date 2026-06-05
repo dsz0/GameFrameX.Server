@@ -15,49 +15,10 @@ namespace GameFrameX.Config
 {
     public partial class TablesComponent
     {
-        internal ai.TbBlackboard TbBlackboard { private set; get; }
-        internal ai.TbBehaviorTree TbBehaviorTree { private set; get; }
-        internal common.TbGlobalConfig TbGlobalConfig { private set; get; }
-        /// <summary>
-        /// 道具表
-        /// </summary>
-        internal item.TbItem TbItem { private set; get; }
-        internal l10n.TbL10NDemo TbL10NDemo { private set; get; }
-        internal l10n.TbPatchDemo TbPatchDemo { private set; get; }
-        internal tag.TbTestTag TbTestTag { private set; get; }
-        internal test.TbFullTypes TbFullTypes { private set; get; }
-        internal test.TbSingleton TbSingleton { private set; get; }
-        internal test.TbNotIndexList TbNotIndexList { private set; get; }
-        internal test.TbMultiUnionIndexList TbMultiUnionIndexList { private set; get; }
-        internal test.TbMultiIndexList TbMultiIndexList { private set; get; }
-        internal test.TbDataFromMisc TbDataFromMisc { private set; get; }
-        internal test.TbMultiRowRecord TbMultiRowRecord { private set; get; }
-        internal test.TbTestMultiColumn TbTestMultiColumn { private set; get; }
-        internal test.TbMultiRowTitle TbMultiRowTitle { private set; get; }
-        internal test.TbTestNull TbTestNull { private set; get; }
-        internal test.TbDemoPrimitive TbDemoPrimitive { private set; get; }
-        internal test.TbTestString TbTestString { private set; get; }
-        internal test.TbDemoGroup TbDemoGroup { private set; get; }
-        internal test.TbDemoGroup_S TbDemoGroupS { private set; get; }
-        internal test.TbTestGlobal TbTestGlobal { private set; get; }
-        internal test.TbTestBeRef TbTestBeRef { private set; get; }
-        internal test.TbTestBeRef2 TbTestBeRef2 { private set; get; }
-        internal test.TbTestRef TbTestRef { private set; get; }
-        internal test.TbTestSize TbTestSize { private set; get; }
-        internal test.TbTestSet TbTestSet { private set; get; }
-        internal test.TbDetectCsvEncoding TbDetectCsvEncoding { private set; get; }
-        internal test.TbItem2 TbItem2 { private set; get; }
-        internal test.TbTestIndex TbTestIndex { private set; get; }
-        internal test.TbTestMap TbTestMap { private set; get; }
-        internal test.TbExcelFromJson TbExcelFromJson { private set; get; }
-        internal test.TbCompositeJsonTable1 TbCompositeJsonTable1 { private set; get; }
-        internal test.TbCompositeJsonTable2 TbCompositeJsonTable2 { private set; get; }
-        internal test.TbCompositeJsonTable3 TbCompositeJsonTable3 { private set; get; }
-        internal test.TbExcelFromJsonMultiRow TbExcelFromJsonMultiRow { private set; get; }
-        internal test.TbTestScriptableObject TbTestScriptableObject { private set; get; }
-        internal test.TbPath TbPath { private set; get; }
-        internal test.TbTestMapper TbTestMapper { private set; get; }
-        internal test.TbDefineFromExcel2 TbDefineFromExcel2 { private set; get; }
+        internal Local.TbLocalization TbLocalization { private set; get; }
+        internal Tables.TbAchievementConfig TbAchievementConfig { private set; get; }
+        internal Tables.TbItemConfig TbItemConfig { private set; get; }
+        internal Tables.TbSoundsConfig TbSoundsConfig { private set; get; }
     
         private ConfigComponent m_ConfigComponent;
 
@@ -72,165 +33,21 @@ namespace GameFrameX.Config
             //m_ConfigComponent.RemoveAllConfigs();
             var loadTasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
     
-            TbBlackboard = new ai.TbBlackboard(() => loader("ai_tbblackboard"));
-            loadTasks.Add(TbBlackboard.LoadAsync());
-            m_ConfigComponent.Add(nameof(ai.TbBlackboard), TbBlackboard);
+            TbLocalization = new Local.TbLocalization(() => loader("local_tblocalization"));
+            loadTasks.Add(TbLocalization.LoadAsync());
+            m_ConfigComponent.Add(nameof(Local.TbLocalization), TbLocalization);
 
-            TbBehaviorTree = new ai.TbBehaviorTree(() => loader("ai_tbbehaviortree"));
-            loadTasks.Add(TbBehaviorTree.LoadAsync());
-            m_ConfigComponent.Add(nameof(ai.TbBehaviorTree), TbBehaviorTree);
+            TbAchievementConfig = new Tables.TbAchievementConfig(() => loader("tables_tbachievementconfig"));
+            loadTasks.Add(TbAchievementConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.TbAchievementConfig), TbAchievementConfig);
 
-            TbGlobalConfig = new common.TbGlobalConfig(() => loader("common_tbglobalconfig"));
-            loadTasks.Add(TbGlobalConfig.LoadAsync());
-            m_ConfigComponent.Add(nameof(common.TbGlobalConfig), TbGlobalConfig);
+            TbItemConfig = new Tables.TbItemConfig(() => loader("tables_tbitemconfig"));
+            loadTasks.Add(TbItemConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.TbItemConfig), TbItemConfig);
 
-            TbItem = new item.TbItem(() => loader("item_tbitem"));
-            loadTasks.Add(TbItem.LoadAsync());
-            m_ConfigComponent.Add(nameof(item.TbItem), TbItem);
-
-            TbL10NDemo = new l10n.TbL10NDemo(() => loader("l10n_tbl10ndemo"));
-            loadTasks.Add(TbL10NDemo.LoadAsync());
-            m_ConfigComponent.Add(nameof(l10n.TbL10NDemo), TbL10NDemo);
-
-            TbPatchDemo = new l10n.TbPatchDemo(() => loader("l10n_tbpatchdemo"));
-            loadTasks.Add(TbPatchDemo.LoadAsync());
-            m_ConfigComponent.Add(nameof(l10n.TbPatchDemo), TbPatchDemo);
-
-            TbTestTag = new tag.TbTestTag(() => loader("tag_tbtesttag"));
-            loadTasks.Add(TbTestTag.LoadAsync());
-            m_ConfigComponent.Add(nameof(tag.TbTestTag), TbTestTag);
-
-            TbFullTypes = new test.TbFullTypes(() => loader("test_tbfulltypes"));
-            loadTasks.Add(TbFullTypes.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbFullTypes), TbFullTypes);
-
-            TbSingleton = new test.TbSingleton(() => loader("test_tbsingleton"));
-            loadTasks.Add(TbSingleton.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbSingleton), TbSingleton);
-
-            TbNotIndexList = new test.TbNotIndexList(() => loader("test_tbnotindexlist"));
-            loadTasks.Add(TbNotIndexList.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbNotIndexList), TbNotIndexList);
-
-            TbMultiUnionIndexList = new test.TbMultiUnionIndexList(() => loader("test_tbmultiunionindexlist"));
-            loadTasks.Add(TbMultiUnionIndexList.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbMultiUnionIndexList), TbMultiUnionIndexList);
-
-            TbMultiIndexList = new test.TbMultiIndexList(() => loader("test_tbmultiindexlist"));
-            loadTasks.Add(TbMultiIndexList.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbMultiIndexList), TbMultiIndexList);
-
-            TbDataFromMisc = new test.TbDataFromMisc(() => loader("test_tbdatafrommisc"));
-            loadTasks.Add(TbDataFromMisc.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbDataFromMisc), TbDataFromMisc);
-
-            TbMultiRowRecord = new test.TbMultiRowRecord(() => loader("test_tbmultirowrecord"));
-            loadTasks.Add(TbMultiRowRecord.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbMultiRowRecord), TbMultiRowRecord);
-
-            TbTestMultiColumn = new test.TbTestMultiColumn(() => loader("test_tbtestmulticolumn"));
-            loadTasks.Add(TbTestMultiColumn.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestMultiColumn), TbTestMultiColumn);
-
-            TbMultiRowTitle = new test.TbMultiRowTitle(() => loader("test_tbmultirowtitle"));
-            loadTasks.Add(TbMultiRowTitle.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbMultiRowTitle), TbMultiRowTitle);
-
-            TbTestNull = new test.TbTestNull(() => loader("test_tbtestnull"));
-            loadTasks.Add(TbTestNull.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestNull), TbTestNull);
-
-            TbDemoPrimitive = new test.TbDemoPrimitive(() => loader("test_tbdemoprimitive"));
-            loadTasks.Add(TbDemoPrimitive.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbDemoPrimitive), TbDemoPrimitive);
-
-            TbTestString = new test.TbTestString(() => loader("test_tbteststring"));
-            loadTasks.Add(TbTestString.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestString), TbTestString);
-
-            TbDemoGroup = new test.TbDemoGroup(() => loader("test_tbdemogroup"));
-            loadTasks.Add(TbDemoGroup.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbDemoGroup), TbDemoGroup);
-
-            TbDemoGroupS = new test.TbDemoGroup_S(() => loader("test_tbdemogroup_s"));
-            loadTasks.Add(TbDemoGroupS.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbDemoGroup_S), TbDemoGroupS);
-
-            TbTestGlobal = new test.TbTestGlobal(() => loader("test_tbtestglobal"));
-            loadTasks.Add(TbTestGlobal.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestGlobal), TbTestGlobal);
-
-            TbTestBeRef = new test.TbTestBeRef(() => loader("test_tbtestberef"));
-            loadTasks.Add(TbTestBeRef.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestBeRef), TbTestBeRef);
-
-            TbTestBeRef2 = new test.TbTestBeRef2(() => loader("test_tbtestberef2"));
-            loadTasks.Add(TbTestBeRef2.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestBeRef2), TbTestBeRef2);
-
-            TbTestRef = new test.TbTestRef(() => loader("test_tbtestref"));
-            loadTasks.Add(TbTestRef.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestRef), TbTestRef);
-
-            TbTestSize = new test.TbTestSize(() => loader("test_tbtestsize"));
-            loadTasks.Add(TbTestSize.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestSize), TbTestSize);
-
-            TbTestSet = new test.TbTestSet(() => loader("test_tbtestset"));
-            loadTasks.Add(TbTestSet.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestSet), TbTestSet);
-
-            TbDetectCsvEncoding = new test.TbDetectCsvEncoding(() => loader("test_tbdetectcsvencoding"));
-            loadTasks.Add(TbDetectCsvEncoding.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbDetectCsvEncoding), TbDetectCsvEncoding);
-
-            TbItem2 = new test.TbItem2(() => loader("test_tbitem2"));
-            loadTasks.Add(TbItem2.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbItem2), TbItem2);
-
-            TbTestIndex = new test.TbTestIndex(() => loader("test_tbtestindex"));
-            loadTasks.Add(TbTestIndex.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestIndex), TbTestIndex);
-
-            TbTestMap = new test.TbTestMap(() => loader("test_tbtestmap"));
-            loadTasks.Add(TbTestMap.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestMap), TbTestMap);
-
-            TbExcelFromJson = new test.TbExcelFromJson(() => loader("test_tbexcelfromjson"));
-            loadTasks.Add(TbExcelFromJson.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbExcelFromJson), TbExcelFromJson);
-
-            TbCompositeJsonTable1 = new test.TbCompositeJsonTable1(() => loader("test_tbcompositejsontable1"));
-            loadTasks.Add(TbCompositeJsonTable1.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbCompositeJsonTable1), TbCompositeJsonTable1);
-
-            TbCompositeJsonTable2 = new test.TbCompositeJsonTable2(() => loader("test_tbcompositejsontable2"));
-            loadTasks.Add(TbCompositeJsonTable2.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbCompositeJsonTable2), TbCompositeJsonTable2);
-
-            TbCompositeJsonTable3 = new test.TbCompositeJsonTable3(() => loader("test_tbcompositejsontable3"));
-            loadTasks.Add(TbCompositeJsonTable3.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbCompositeJsonTable3), TbCompositeJsonTable3);
-
-            TbExcelFromJsonMultiRow = new test.TbExcelFromJsonMultiRow(() => loader("test_tbexcelfromjsonmultirow"));
-            loadTasks.Add(TbExcelFromJsonMultiRow.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbExcelFromJsonMultiRow), TbExcelFromJsonMultiRow);
-
-            TbTestScriptableObject = new test.TbTestScriptableObject(() => loader("test_tbtestscriptableobject"));
-            loadTasks.Add(TbTestScriptableObject.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestScriptableObject), TbTestScriptableObject);
-
-            TbPath = new test.TbPath(() => loader("test_tbpath"));
-            loadTasks.Add(TbPath.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbPath), TbPath);
-
-            TbTestMapper = new test.TbTestMapper(() => loader("test_tbtestmapper"));
-            loadTasks.Add(TbTestMapper.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbTestMapper), TbTestMapper);
-
-            TbDefineFromExcel2 = new test.TbDefineFromExcel2(() => loader("test_tbdefinefromexcel2"));
-            loadTasks.Add(TbDefineFromExcel2.LoadAsync());
-            m_ConfigComponent.Add(nameof(test.TbDefineFromExcel2), TbDefineFromExcel2);
+            TbSoundsConfig = new Tables.TbSoundsConfig(() => loader("tables_tbsoundsconfig"));
+            loadTasks.Add(TbSoundsConfig.LoadAsync());
+            m_ConfigComponent.Add(nameof(Tables.TbSoundsConfig), TbSoundsConfig);
 
     
             await System.Threading.Tasks.Task.WhenAll(loadTasks);
@@ -242,46 +59,10 @@ namespace GameFrameX.Config
         {
             //TablesMemory.BeginRecord();
     
-            // TbBlackboard = new ai.TbBlackboard();
-            // TbBehaviorTree = new ai.TbBehaviorTree();
-            // TbGlobalConfig = new common.TbGlobalConfig();
-            // TbItem = new item.TbItem();
-            // TbL10NDemo = new l10n.TbL10NDemo();
-            // TbPatchDemo = new l10n.TbPatchDemo();
-            // TbTestTag = new tag.TbTestTag();
-            // TbFullTypes = new test.TbFullTypes();
-            // TbSingleton = new test.TbSingleton();
-            // TbNotIndexList = new test.TbNotIndexList();
-            // TbMultiUnionIndexList = new test.TbMultiUnionIndexList();
-            // TbMultiIndexList = new test.TbMultiIndexList();
-            // TbDataFromMisc = new test.TbDataFromMisc();
-            // TbMultiRowRecord = new test.TbMultiRowRecord();
-            // TbTestMultiColumn = new test.TbTestMultiColumn();
-            // TbMultiRowTitle = new test.TbMultiRowTitle();
-            // TbTestNull = new test.TbTestNull();
-            // TbDemoPrimitive = new test.TbDemoPrimitive();
-            // TbTestString = new test.TbTestString();
-            // TbDemoGroup = new test.TbDemoGroup();
-            // TbDemoGroupS = new test.TbDemoGroup_S();
-            // TbTestGlobal = new test.TbTestGlobal();
-            // TbTestBeRef = new test.TbTestBeRef();
-            // TbTestBeRef2 = new test.TbTestBeRef2();
-            // TbTestRef = new test.TbTestRef();
-            // TbTestSize = new test.TbTestSize();
-            // TbTestSet = new test.TbTestSet();
-            // TbDetectCsvEncoding = new test.TbDetectCsvEncoding();
-            // TbItem2 = new test.TbItem2();
-            // TbTestIndex = new test.TbTestIndex();
-            // TbTestMap = new test.TbTestMap();
-            // TbExcelFromJson = new test.TbExcelFromJson();
-            // TbCompositeJsonTable1 = new test.TbCompositeJsonTable1();
-            // TbCompositeJsonTable2 = new test.TbCompositeJsonTable2();
-            // TbCompositeJsonTable3 = new test.TbCompositeJsonTable3();
-            // TbExcelFromJsonMultiRow = new test.TbExcelFromJsonMultiRow();
-            // TbTestScriptableObject = new test.TbTestScriptableObject();
-            // TbPath = new test.TbPath();
-            // TbTestMapper = new test.TbTestMapper();
-            // TbDefineFromExcel2 = new test.TbDefineFromExcel2();
+            // TbLocalization = new Local.TbLocalization();
+            // TbAchievementConfig = new Tables.TbAchievementConfig();
+            // TbItemConfig = new Tables.TbItemConfig();
+            // TbSoundsConfig = new Tables.TbSoundsConfig();
             //TablesMemory.EndRecord();
         }
 
@@ -293,46 +74,10 @@ namespace GameFrameX.Config
 
         private void ResolveRef()
         {
-            TbBlackboard.ResolveRef(this);
-            TbBehaviorTree.ResolveRef(this);
-            TbGlobalConfig.ResolveRef(this);
-            TbItem.ResolveRef(this);
-            TbL10NDemo.ResolveRef(this);
-            TbPatchDemo.ResolveRef(this);
-            TbTestTag.ResolveRef(this);
-            TbFullTypes.ResolveRef(this);
-            TbSingleton.ResolveRef(this);
-            TbNotIndexList.ResolveRef(this);
-            TbMultiUnionIndexList.ResolveRef(this);
-            TbMultiIndexList.ResolveRef(this);
-            TbDataFromMisc.ResolveRef(this);
-            TbMultiRowRecord.ResolveRef(this);
-            TbTestMultiColumn.ResolveRef(this);
-            TbMultiRowTitle.ResolveRef(this);
-            TbTestNull.ResolveRef(this);
-            TbDemoPrimitive.ResolveRef(this);
-            TbTestString.ResolveRef(this);
-            TbDemoGroup.ResolveRef(this);
-            TbDemoGroupS.ResolveRef(this);
-            TbTestGlobal.ResolveRef(this);
-            TbTestBeRef.ResolveRef(this);
-            TbTestBeRef2.ResolveRef(this);
-            TbTestRef.ResolveRef(this);
-            TbTestSize.ResolveRef(this);
-            TbTestSet.ResolveRef(this);
-            TbDetectCsvEncoding.ResolveRef(this);
-            TbItem2.ResolveRef(this);
-            TbTestIndex.ResolveRef(this);
-            TbTestMap.ResolveRef(this);
-            TbExcelFromJson.ResolveRef(this);
-            TbCompositeJsonTable1.ResolveRef(this);
-            TbCompositeJsonTable2.ResolveRef(this);
-            TbCompositeJsonTable3.ResolveRef(this);
-            TbExcelFromJsonMultiRow.ResolveRef(this);
-            TbTestScriptableObject.ResolveRef(this);
-            TbPath.ResolveRef(this);
-            TbTestMapper.ResolveRef(this);
-            TbDefineFromExcel2.ResolveRef(this);
+            TbLocalization.ResolveRef(this);
+            TbAchievementConfig.ResolveRef(this);
+            TbItemConfig.ResolveRef(this);
+            TbSoundsConfig.ResolveRef(this);
         }
     
         partial void PostInit();

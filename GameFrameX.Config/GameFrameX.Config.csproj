@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <Nullable>disable</Nullable>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="GameFrameX.Core.Config" Version="1.2.0-beta1" />
-      <PackageReference Include="GameFrameX.Log" Version="1.2.0-beta1" />
+      <PackageReference Include="GameFrameX.Core.Config" Version="1.7.3" />
+      <PackageReference Include="GameFrameX.Foundation.Logger" Version="2.2.10" />
     </ItemGroup>
 
 </Project>
