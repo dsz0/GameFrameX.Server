@@ -161,11 +161,10 @@ Server_main/
 │   ├── User_300.cs              # User/account protocols
 │   └── BuiltIn/                 # Built-in system protocols
 │
-├── GameFrameX.CodeGenerator/    # Roslyn source generator
-│   ├── AgentGenerator.cs        # Agent wrapper code generation
-│   └── AgentTemplate.cs         # Code templates
+├── GameFrameX.Architecture.Analyzers/        # Compile-time architecture rules
 │
 ├── Server.sln                   # Visual Studio solution
+├── Server.slnx                  # XML solution
 ├── Dockerfile                   # Docker multi-stage build
 ├── docker-compose.yml           # Docker Compose orchestration
 └── LICENSE.md                   # Apache License 2.0
@@ -413,6 +412,27 @@ The hot-update system allows replacing business logic without stopping the serve
 curl "http://localhost:28080/game/api/Reload?version=1.0.1"
 ```
 
+### Architecture Analyzers
+
+`GameFrameX.Architecture.Analyzers` is a Roslyn analyzer project that enforces the Apps/Hotfix architecture at compile time. It is referenced as an analyzer by `GameFrameX.Apps`, `GameFrameX.Hotfix`, and `GameFrameX.Launcher` only; `GameFrameX.Config`, `GameFrameX.Proto`, and test assemblies are ignored by design.
+
+| ID | Rule |
+| :--- | :--- |
+| `GFX0001` | `BaseCacheState` subclasses must be defined in `GameFrameX.Apps`. |
+| `GFX0002` | `StateComponent<TState>` subclasses must be defined in `GameFrameX.Apps`. |
+| `GFX0003` | `BaseHttpHandler` subclasses must be defined in `GameFrameX.Hotfix`. |
+| `GFX0004` | `IHotfixBridge` implementations must be defined in `GameFrameX.Hotfix`. |
+| `GFX0005` | `IComponentAgent` implementations must be defined in `GameFrameX.Hotfix`. |
+| `GFX0006` | `[MessageMapping]` handlers must be defined in `GameFrameX.Hotfix`. |
+| `GFX0007` | `[MessageRpcMapping]` handlers must be defined in `GameFrameX.Hotfix`. |
+| `GFX0008` | `IEventListener` implementations must be defined in `GameFrameX.Hotfix`. |
+| `GFX0009` | `ITimerHandler` implementations must be defined in `GameFrameX.Hotfix`. |
+| `GFX0010` | `[MessageMapping]` handlers must be `sealed`. |
+| `GFX0011` | `IEventListener` implementations must be `sealed`. |
+| `GFX0012` | `[MessageMapping]` handler type names must end with `Handler`. |
+| `GFX0013` | `IEventListener` implementation type names must end with `EventListener`. |
+| `GFX0014` | `IComponentAgent` implementation type names must end with `ComponentAgent`. |
+
 ## Documentation & Resources
 
 ### Configuration
@@ -427,6 +447,9 @@ curl "http://localhost:28080/game/api/Reload?version=1.0.1"
 | `MetricsPort` | Prometheus metrics port | `0` | `29090` |
 | `DataBaseUrl` | MongoDB connection string | — | `mongodb://localhost:27017` |
 | `DataBaseName` | Database name | — | `gameframex` |
+
+> **[!NOTE]**
+> The table above lists only the minimum startup parameters. For the complete configuration reference (network, logging, actor, monitoring, security, etc.), see **[Configuration Management — GameFrameX.Server.Source](https://github.com/GameFrameX/GameFrameX.Server.Source#configuration-management)**.
 
 ```bash
 dotnet GameFrameX.Launcher.dll \

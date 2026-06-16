@@ -161,11 +161,10 @@ Server_main/
 │   ├── User_300.cs              # 使用者/帳號協定
 │   └── BuiltIn/                 # 內建系統協定
 │
-├── GameFrameX.CodeGenerator/    # Roslyn 原始碼產生器
-│   ├── AgentGenerator.cs        # Agent 包裝程式碼產生
-│   └── AgentTemplate.cs         # 程式碼範本
+├── GameFrameX.Architecture.Analyzers/        # 編譯期架構規則檢查器
 │
 ├── Server.sln                   # Visual Studio 解決方案
+├── Server.slnx                  # XML 解決方案
 ├── Dockerfile                   # Docker 多階段建置
 ├── docker-compose.yml           # Docker Compose 編排
 └── LICENSE.md                   # Apache License 2.0
@@ -413,6 +412,27 @@ var count = await GameDb.DeleteAsync(state);
 curl "http://localhost:28080/game/api/Reload?version=1.0.1"
 ```
 
+### 架構分析器
+
+`GameFrameX.Architecture.Analyzers` 是 Roslyn 分析器專案，用於在編譯期強制約束 Apps/Hotfix 分層架構。它只作為 analyzer 參考到 `GameFrameX.Apps`、`GameFrameX.Hotfix` 和 `GameFrameX.Launcher`；`GameFrameX.Config`、`GameFrameX.Proto` 和測試組件會依設計忽略。
+
+| ID | 規則 |
+| :--- | :--- |
+| `GFX0001` | `BaseCacheState` 子類別必須定義在 `GameFrameX.Apps`。 |
+| `GFX0002` | `StateComponent<TState>` 子類別必須定義在 `GameFrameX.Apps`。 |
+| `GFX0003` | `BaseHttpHandler` 子類別必須定義在 `GameFrameX.Hotfix`。 |
+| `GFX0004` | `IHotfixBridge` 實作類別必須定義在 `GameFrameX.Hotfix`。 |
+| `GFX0005` | `IComponentAgent` 實作類別必須定義在 `GameFrameX.Hotfix`。 |
+| `GFX0006` | `[MessageMapping]` 處理器必須定義在 `GameFrameX.Hotfix`。 |
+| `GFX0007` | `[MessageRpcMapping]` 處理器必須定義在 `GameFrameX.Hotfix`。 |
+| `GFX0008` | `IEventListener` 實作類別必須定義在 `GameFrameX.Hotfix`。 |
+| `GFX0009` | `ITimerHandler` 實作類別必須定義在 `GameFrameX.Hotfix`。 |
+| `GFX0010` | `[MessageMapping]` 處理器必須標記為 `sealed`。 |
+| `GFX0011` | `IEventListener` 實作類別必須標記為 `sealed`。 |
+| `GFX0012` | `[MessageMapping]` 處理器型別名稱必須以 `Handler` 結尾。 |
+| `GFX0013` | `IEventListener` 實作類別型別名稱必須以 `EventListener` 結尾。 |
+| `GFX0014` | `IComponentAgent` 實作類別型別名稱必須以 `ComponentAgent` 結尾。 |
+
 ## 文檔與資源
 
 | 設定項 | 說明 | 預設值 | 範例 |
@@ -425,6 +445,9 @@ curl "http://localhost:28080/game/api/Reload?version=1.0.1"
 | `MetricsPort` | Prometheus 指標埠 | `0` | `29090` |
 | `DataBaseUrl` | MongoDB 連線字串 | — | `mongodb://localhost:27017` |
 | `DataBaseName` | 資料庫名稱 | — | `gameframex` |
+
+> **[!NOTE]**
+> 上表僅列出最小啟動參數。完整配置項（網路、日誌、Actor、監控、安全等）請查閱 **[Configuration Management — GameFrameX.Server.Source](https://github.com/GameFrameX/GameFrameX.Server.Source#configuration-management)**。
 
 ```bash
 dotnet GameFrameX.Launcher.dll \

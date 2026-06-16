@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GameFrameX.Proto\GameFrameX.Proto.csproj" />
+      <ProjectReference Include="..\GameFrameX.Architecture.Analyzers\GameFrameX.Architecture.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
     <ItemGroup>
@@ -17,8 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Mapster" Version="7.4.0" />
-      <PackageReference Include="GameFrameX.Core" Version="1.8.1" />
-      <PackageReference Include="GameFrameX.Monitor" Version="1.8.1" />
+      <PackageReference Include="Mapster" Version="10.0.7" />
+      <PackageReference Include="GameFrameX.Core" Version="1.10.2" />
+      <PackageReference Include="GameFrameX.Monitor" Version="1.10.2" />
     </ItemGroup>
 </Project>
